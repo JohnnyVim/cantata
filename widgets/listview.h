@@ -26,6 +26,7 @@
 
 #include <QListView>
 #include <QPixmap>
+#include <QScrollBar>
 #include "treeview.h"
 
 class QIcon;
@@ -71,6 +72,7 @@ private:
     QMenu *menu;
     QPixmap bgnd;
     double zoomLevel;
+    void updateGeometries();
 };
 
 #endif
