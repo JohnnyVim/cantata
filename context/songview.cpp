@@ -92,7 +92,7 @@ static inline QString mpdLyricsFilePath(const Song &song)
 
 static inline QString fixNewLines(const QString &o)
 {
-    return QString(o).replace("\\n", "\n").replace("\\t", " ").replace("\t", " ").replace(QLatin1String("\n\n\n"), QLatin1String("\n\n")).replace("\n", "<br/>");
+    return "<center>"+QString(o).replace("\\n", "\n").replace("\\t", " ").replace("\t", " ").replace(QLatin1String("\n\n\n"), QLatin1String("\n\n")).replace("\n", "<br/>")+"</center>";
 }
 
 SongView::SongView(QWidget *p)
@@ -132,6 +132,10 @@ SongView::SongView(QWidget *p)
     for (TextBrowser *t: texts) {
         connect(t, SIGNAL(anchorClicked(QUrl)), SLOT(showMoreInfo(QUrl)));
     }
+
+    QFont font = text->font();
+    font.setPointSize(font.pointSize()*4);
+    text->setFont(font);
 
     text->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(text, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showContextMenu(QPoint)));
