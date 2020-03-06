@@ -136,6 +136,7 @@ SongView::SongView(QWidget *p)
     QFont font = text->font();
     font.setPointSize(font.pointSize()*4);
     text->setFont(font);
+    lastSongInterval = 0;
 
     text->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(text, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showContextMenu(QPoint)));
@@ -287,7 +288,7 @@ void SongView::toggleScroll()
     if (scrollAction->isChecked()) {
         scrollTimer=new QTimer(this);
         scrollTimer->setSingleShot(false);
-        scrollTimer->setInterval(1000);
+        scrollTimer->setInterval(1000 / autoScrollPrecision);
         connect(MPDStatus::self(), SIGNAL(updated()), this, SLOT(songPosition()));
         connect(scrollTimer, SIGNAL(timeout()), this, SLOT(scroll()));
         scroll();
@@ -327,6 +328,7 @@ void SongView::scroll()
             }
         } else {
             scrollTimer->stop();
+            return;
         }
 
         if (MPDStatus::self()->guessedElapsed()>=MPDStatus::self()->timeTotal()) {
@@ -337,9 +339,13 @@ void SongView::scroll()
         }
 
         if (bar->isVisible()) {
+            if (MPDStatus::self()->guessedElapsed() != lastSongPosition) {
+                lastSongPosition = MPDStatus::self()->guessedElapsed();
+                lastSongInterval -= autoScrollPrecision;
+            }
             int newSliderPosition =
-                        MPDStatus::self()->guessedElapsed() * (bar->maximum() + bar->pageStep()) / MPDStatus::self()->timeTotal() -
-                        bar->pageStep() / 2;
+                        (MPDStatus::self()->guessedElapsed() * autoScrollPrecision + lastSongInterval++) * (bar->maximum() + bar->pageStep()) /
+                        (MPDStatus::self()->timeTotal() * autoScrollPrecision) - bar->pageStep() / 2;
             bar->setSliderPosition(newSliderPosition);
         }
     }

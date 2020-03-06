@@ -55,6 +55,7 @@ public:
     static const QLatin1String constExtension;
     static const QLatin1String constCacheDir;
     static const QLatin1String constInfoExt;
+    static const int autoScrollPrecision = 60;
 
     SongView(QWidget *p);
     ~SongView() override;
@@ -114,6 +115,8 @@ private:
     qint32 songPos;
     int currentProvider;
     int currentRequest;
+    int lastSongPosition;
+    int lastSongInterval;
     Action *scrollAction;
     Action *refreshAction;
     Action *searchAction;
