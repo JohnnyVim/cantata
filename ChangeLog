@@ -1,3 +1,22 @@
+2.4.2
+-----
+1. Correctly handle changing 'Basic' mode music folder.
+2. When stopping 'Basic' mode MPD instance, send SIGKILL.
+3. Correctly set 'storeLyricsInMpdDir' config item, UI was setting wrong config
+   item.
+4. Set minimum Qt5 version to 5.11
+5. Fix destructor of DeviceManagerPrivate to prevent Cantata from potentially
+   crashing when closing.
+6. Correctly set song details 'time', 'year', 'track' and 'disc' for streams
+   from online services.
+7. Don't use last.fm for artist image searches, its broken.
+8. Hide BB10 styles (look bad), and gtk2 style (doesn't start) from list of
+   styles in interface settings.
+9. When checking if song exists, check disc number.
+10. Fix getting song details from Cantata stream URLs.
+11. Amend MPRIS interface: fix CanPlay/CanPause/CanSeek status update as well
+    as LoopStatus getter and setter.
+
 2.4.1
 -----
 1. Re-enable custom playqueue background. This is broken for 5.12, but that's a
