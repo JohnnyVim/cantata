@@ -1749,8 +1749,8 @@ void MainWindow::playQueueSearchActivated(bool a)
 void MainWindow::updatePlayQueue(const QList<Song> &songs, bool isComplete)
 {
     StdActions::self()->playPauseTrackAction->setEnabled(!songs.isEmpty());
-    StdActions::self()->nextTrackAction->setEnabled(StdActions::self()->stopPlaybackAction->isEnabled() && songs.count()>1);
-    StdActions::self()->prevTrackAction->setEnabled(StdActions::self()->stopPlaybackAction->isEnabled() && songs.count()>1);
+    StdActions::self()->nextTrackAction->setEnabled(StdActions::self()->stopPlaybackAction->isEnabled() && !songs.isEmpty() && MPDStatus::self()->nextSongId()!=-1);
+    StdActions::self()->prevTrackAction->setEnabled(StdActions::self()->stopPlaybackAction->isEnabled() && !songs.isEmpty() && (songs.count()>1 || current.time>5));
     StdActions::self()->savePlayQueueAction->setEnabled(!songs.isEmpty());
     clearPlayQueueAction->setEnabled(!songs.isEmpty());
 
@@ -1773,6 +1773,10 @@ void MainWindow::updatePlayQueue(const QList<Song> &songs, bool isComplete)
             updateCurrentSong(pqSong, wasEmpty);
             songChanged=true;
         }
+    }
+
+    if (songChanged) {
+        StdActions::self()->prevTrackAction->setEnabled(StdActions::self()->stopPlaybackAction->isEnabled() && !songs.isEmpty() && (songs.count()>1 || current.time>5));
     }
 
     QModelIndex idx=playQueueProxyModel.mapFromSource(PlayQueueModel::self()->index(PlayQueueModel::self()->currentSongRow(), 0));
@@ -1816,11 +1820,6 @@ void MainWindow::updateCurrentSong(Song song, bool wasEmpty)
     current=song;
 
     CurrentCover::self()->update(current);
-    #ifdef QT_QTDBUS_FOUND
-    if (mpris) {
-        mpris->updateCurrentSong(current);
-    }
-    #endif
     if (current.time<5 && MPDStatus::self()->songId()==current.id && MPDStatus::self()->timeTotal()>5) {
         current.time=MPDStatus::self()->timeTotal();
     }
@@ -1832,6 +1831,16 @@ void MainWindow::updateCurrentSong(Song song, bool wasEmpty)
     playQueue->updateRows(idx.row(), current.key, autoScrollPlayQueue && playQueueProxyModel.isEmpty() && isPlaying, wasEmpty);
     scrollPlayQueue(wasEmpty);
     if (diffSong) {
+        #ifdef QT_QTDBUS_FOUND
+        if (mpris) {
+            mpris->updateCurrentSong(current);
+        }
+        #endif
+        #ifdef Q_OS_WIN
+        if (thumbnailTooolbar) {
+            thumbnailTooolbar->updateCurrentSong(current);
+        }
+        #endif
         context->update(current);
         trayItem->songChanged(song, isPlaying);
     }
@@ -1910,8 +1919,8 @@ void MainWindow::updateStatus(MPDStatus * const status)
     case MPDState_Playing:
         StdActions::self()->playPauseTrackAction->setIcon(Icons::self()->toolbarPauseIcon);
         enableStopActions(true);
-        StdActions::self()->nextTrackAction->setEnabled(status->playlistLength()>1);
-        StdActions::self()->prevTrackAction->setEnabled(status->playlistLength()>1);
+        StdActions::self()->nextTrackAction->setEnabled(status->nextSongId()!=-1);
+        StdActions::self()->prevTrackAction->setEnabled(status->playlistLength()>1 || status->timeTotal()>5 || current.time>5);
         nowPlaying->startTimer();
         break;
     case MPDState_Inactive:
@@ -1933,8 +1942,8 @@ void MainWindow::updateStatus(MPDStatus * const status)
     case MPDState_Paused:
         StdActions::self()->playPauseTrackAction->setIcon(Icons::self()->toolbarPlayIcon);
         enableStopActions(0!=status->playlistLength());
-        StdActions::self()->nextTrackAction->setEnabled(status->playlistLength()>1);
-        StdActions::self()->prevTrackAction->setEnabled(status->playlistLength()>1);
+        StdActions::self()->nextTrackAction->setEnabled(status->nextSongId()!=-1);
+        StdActions::self()->prevTrackAction->setEnabled(status->playlistLength()>1 || status->timeTotal()>5 || current.time>5);
         nowPlaying->stopTimer();
     default:
         break;
@@ -1952,9 +1961,14 @@ void MainWindow::updateStatus(MPDStatus * const status)
     // Update status info
     lastState = status->state();
     lastSongId = status->songId();
+    #ifdef QT_QTDBUS_FOUND
+    if (mpris) {
+        mpris->updateStatus(status);
+    }
+    #endif
     #if defined Q_OS_WIN
     if (thumbnailTooolbar) {
-        thumbnailTooolbar->update(status);
+        thumbnailTooolbar->updateStatus(status);
     }
     #endif
     #ifdef Q_OS_MAC
@@ -2308,16 +2322,17 @@ void MainWindow::locateTrack()
 
 void MainWindow::moveSelectionAfterCurrentSong()
 {
-    QList<int> selectedIdexes = playQueueProxyModel.mapToSourceRows(playQueue->selectedIndexes());
+    QList<int> selectedRows = playQueueProxyModel.mapToSourceRows(playQueue->selectedIndexes());
+    int currentSongIdx = PlayQueueModel::self()->currentSongRow();
+    QList<quint32> selectedSongIds;
 
-    if( !selectedIdexes.empty() ){
-        QList<quint32> selectedSongIds;
-        for (int row: selectedIdexes){
+    for (int row: selectedRows) {
+        if (currentSongIdx!=row) {
             selectedSongIds.append( (quint32) row);
         }
+    }
 
-        int currentSongIdx = PlayQueueModel::self()->currentSongRow();
-
+    if( !selectedSongIds.empty() ) {
         emit playNext(selectedSongIds, currentSongIdx+1, PlayQueueModel::self()->rowCount());
     }
 }
