@@ -181,7 +181,7 @@ void ListView::checkDoubleClick(const QModelIndex &idx)
 void ListView::updateGeometries()
 {
   QListView::updateGeometries();
-  verticalScrollBar()->setSingleStep(15);
+  verticalScrollBar()->setSingleStep(30);
 }
 
 #include "moc_listview.cpp"
