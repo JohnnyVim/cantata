@@ -1,7 +1,7 @@
 /*
  * Cantata
  *
- * Copyright (c) 2011-2020 Craig Drummond <craig.p.drummond@gmail.com>
+ * Copyright (c) 2011-2021 Craig Drummond <craig.p.drummond@gmail.com>
  *
  */
 
@@ -225,6 +225,7 @@ struct Song
     QString albumKey() const;
     bool isCueFile() const { return Playlist==type && file.endsWith(QLatin1String(".cue"), Qt::CaseInsensitive); }
     bool isFromCue() const { return CueFile::isCue(file); }
+    bool isMpdCueTrack() const;
     QString basicArtist(bool orComposer=false) const;
     QString basicTitle() const;
     QString filePath(const QString &base=QString()) const;

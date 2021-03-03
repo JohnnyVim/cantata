@@ -1,7 +1,7 @@
 /*
  * Cantata
  *
- * Copyright (c) 2011-2020 Craig Drummond <craig.p.drummond@gmail.com>
+ * Copyright (c) 2011-2021 Craig Drummond <craig.p.drummond@gmail.com>
  *
  * ----
  *
@@ -111,6 +111,7 @@ namespace Utils
     extern bool limitedHeight(QWidget *w);
     extern void resizeWindow(QWidget *w, bool preserveWidth=true, bool preserveHeight=true);
     extern void raiseWindow(QWidget *w);
+    extern QSize minSize(const QSize &fst, const QSize &snd);
 
     enum Desktop {
         KDE,

@@ -1,7 +1,7 @@
 /*
  * Cantata
  *
- * Copyright (c) 2011-2020 Craig Drummond <craig.p.drummond@gmail.com>
+ * Copyright (c) 2011-2021 Craig Drummond <craig.p.drummond@gmail.com>
  *
  */
 /*
@@ -580,6 +580,11 @@ MainWindow::MainWindow(QWidget *parent)
         }
         if (fullScreenAction->isChecked()) {
             fullScreen();
+        } else {
+            QPoint p = Settings::self()->mainWindowPos();
+            if (!p.isNull()) {
+                move(p);
+            }
         }
     }
 
@@ -948,6 +953,7 @@ MainWindow::~MainWindow()
         }
         Settings::self()->saveMainWindowCollapsedSize(expandInterfaceAction->isChecked() ? collapsedSize : size());
         Settings::self()->saveShowPlaylist(expandInterfaceAction->isChecked());
+        Settings::self()->saveMainWindowPos(pos());
     }
     #ifdef ENABLE_HTTP_STREAM_PLAYBACK
     Settings::self()->savePlayStream(streamPlayAction->isVisible() && streamPlayAction->isChecked());
@@ -1211,7 +1217,7 @@ void MainWindow::showAboutDialog()
 {
     QMessageBox::about(this, tr("About Cantata"),
                        tr("<b>Cantata %1</b><br/><br/>MPD client.<br/><br/>"
-                           "&copy; 2011-2020 Craig Drummond<br/>Released under the <a href=\"http://www.gnu.org/licenses/gpl.html\">GPLv3</a>").arg(PACKAGE_VERSION_STRING)+
+                           "&copy; 2011-2021 Craig Drummond<br/>Released under the <a href=\"http://www.gnu.org/licenses/gpl.html\">GPLv3</a>").arg(PACKAGE_VERSION_STRING)+
                        QLatin1String("<br/><br/>")+
                        tr("Please refer to <a href=\"https://github.com/CDrummond/cantata/issues\">Cantata's issue tracker</a> for a list of known issues, and to report new issues.")+
                        QLatin1String("<br/><br/><i><small>")+

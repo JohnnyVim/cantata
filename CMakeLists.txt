@@ -29,7 +29,7 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Qt Client for MPD")
 set(CPACK_SOURCE_GENERATOR "TBZ2")
 set(CPACK_PACKAGE_VERSION_MAJOR "2")
 set(CPACK_PACKAGE_VERSION_MINOR "4")
-set(CPACK_PACKAGE_VERSION_PATCH "2")
+set(CPACK_PACKAGE_VERSION_PATCH "3")
 set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 set(CPACK_PACKAGE_VERSION_SPIN "")  # Use ".$number" - e.g. ".1"
 set(CPACK_PACKAGE_CONTACT "Craig Drummond <craig.p.drummond@gmail.com>")
@@ -49,7 +49,8 @@ option(ENABLE_MPG123 "Enable mpg123 libraries (required for replaygain calculati
 option(ENABLE_PROXY_CONFIG "Enable proxy config in settings dialog" ON)
 option(ENABLE_HTTP_SERVER "Enable internal HTTP server to play non-MPD files" ON)
 option(ENABLE_LIBVLC "Use libVLC for MPD HTTP stream playback (if ENABLE_HTTP_STREAM_PLAYBACK=ON)" OFF)
-option(ENABLE_CATEGORIZED_VIEW "Enable support for categorised view" ON)
+option(ENABLE_CATEGORIZED_VIEW "Enable support for categorised view" OFF)
+option(ENABLE_SCROBBLING "Enable scrobbling" ON)
 
 if (WIN32 OR APPLE OR HAIKU)
     option(ENABLE_DEVICES_SUPPORT "Enable suport for external devices" OFF)
@@ -324,7 +325,7 @@ set(CANTATA_SRCS ${CANTATA_SRCS}
     widgets/actionlabel.cpp widgets/playqueueview.cpp widgets/groupedview.cpp widgets/actionitemdelegate.cpp widgets/textbrowser.cpp
     widgets/volumeslider.cpp widgets/menubutton.cpp widgets/icons.cpp widgets/toolbutton.cpp widgets/wizardpage.cpp
     widgets/searchwidget.cpp widgets/messageoverlay.cpp widgets/basicitemdelegate.cpp widgets/sizegrip.cpp
-    widgets/servicestatuslabel.cpp widgets/spacerwidget.cpp widgets/songdialog.cpp widgets/stretchheaderview.cpp
+    widgets/spacerwidget.cpp widgets/songdialog.cpp widgets/stretchheaderview.cpp
     widgets/tableview.cpp widgets/thinsplitterhandle.cpp widgets/coverwidget.cpp widgets/ratingwidget.cpp widgets/notelabel.cpp
     widgets/selectorlabel.cpp widgets/titlewidget.cpp widgets/multipagewidget.cpp widgets/singlepagewidget.cpp widgets/stackedpagewidget.cpp
     widgets/mirrormenu.cpp widgets/genrecombo.cpp widgets/volumecontrol.cpp
@@ -332,9 +333,8 @@ set(CANTATA_SRCS ${CANTATA_SRCS}
     context/contextwidget.cpp context/view.cpp context/artistview.cpp context/albumview.cpp context/songview.cpp context/contextengine.cpp
     context/wikipediaengine.cpp context/wikipediasettings.cpp context/othersettings.cpp context/contextsettings.cpp context/togglelist.cpp
     context/lastfmengine.cpp context/metaengine.cpp context/onlineview.cpp
-    streams/streamspage.cpp streams/digitallyimportedsettings.cpp streams/streamssettings.cpp streams/streamdialog.cpp streams/tar.cpp
-    streams/streamproviderlistdialog.cpp streams/streamfetcher.cpp
-    models/streamsproxymodel.cpp models/streamsearchmodel.cpp models/digitallyimported.cpp models/musiclibraryitemroot.cpp
+    streams/streamspage.cpp streams/streamdialog.cpp streams/streamfetcher.cpp
+    models/streamsproxymodel.cpp models/streamsearchmodel.cpp models/musiclibraryitemroot.cpp
     models/musiclibraryitemartist.cpp models/musiclibraryitemalbum.cpp models/musiclibraryproxymodel.cpp models/playlistsmodel.cpp
     models/playlistsproxymodel.cpp models/playqueuemodel.cpp models/proxymodel.cpp models/actionmodel.cpp models/musiclibraryitem.cpp
     models/browsemodel.cpp models/searchmodel.cpp models/streamsmodel.cpp models/searchproxymodel.cpp models/sqllibrarymodel.cpp
@@ -350,14 +350,13 @@ set(CANTATA_SRCS ${CANTATA_SRCS}
     online/onlinesearchwidget.cpp online/podcastservice.cpp online/rssparser.cpp online/opmlparser.cpp online/podcastsearchdialog.cpp
     online/podcastsettingsdialog.cpp online/podcastwidget.cpp online/onlinesearchservice.cpp
     db/onlinedb.cpp
-    scrobbling/scrobbler.cpp scrobbling/pausabletimer.cpp scrobbling/scrobblingsettings.cpp scrobbling/scrobblinglove.cpp
     http/httpserver.cpp)
 set(CANTATA_UIS ${CANTATA_UIS}
     gui/initialsettingswizard.ui gui/mainwindow.ui gui/interfacesettings.ui gui/playbacksettings.ui gui/serversettings.ui gui/coverdialog.ui
     context/togglelist.ui context/othersettings.ui
     streams/digitallyimportedsettings.ui streams/streamssettings.ui
     playlists/playlistrule.ui playlists/playlistrules.ui
-    widgets/itemview.ui scrobbling/scrobblingsettings.ui)
+    widgets/itemview.ui)
 
 if (ENABLE_CATEGORIZED_VIEW)
     set(CANTATA_SRCS ${CANTATA_SRCS} widgets/categorizedview.cpp)
@@ -365,6 +364,10 @@ endif ()
 if (ENABLE_SIMPLE_MPD_SUPPORT)
     set(CANTATA_SRCS ${CANTATA_SRCS} mpd-interface/mpduser.cpp)
 endif ()
+if (ENABLE_SCROBBLING)
+    set(CANTATA_SRCS ${CANTATA_SRCS} scrobbling/scrobbler.cpp scrobbling/pausabletimer.cpp scrobbling/scrobblingsettings.cpp scrobbling/scrobblinglove.cpp)
+    set(CANTATA_UIS ${CANTATA_UIS} scrobbling/scrobblingsettings.ui)
+endif()
 
 set(CANTATA_LIBS ${CANTATA_LIBS} support)
 

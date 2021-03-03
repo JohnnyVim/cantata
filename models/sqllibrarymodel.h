@@ -1,7 +1,7 @@
 /*
  * Cantata
  *
- * Copyright (c) 2017-2020 Craig Drummond <craig.p.drummond@gmail.com>
+ * Copyright (c) 2017-2021 Craig Drummond <craig.p.drummond@gmail.com>
  *
  * ----
  *
@@ -162,8 +162,8 @@ public:
     QModelIndex findArtistIndex(const QString &artist);
     QSet<QString> getGenres() const;
     QSet<QString> getArtists() const;
-    QList<Song> getAlbumTracks(const QString &artistId, const QString &albumId) const;
-    QList<Song> getAlbumTracks(const Song &song) const { return getAlbumTracks(song.albumArtistOrComposer(), song.albumId()); }
+    QList<Song> getAlbumTracks(const QString &artistId, const QString &albumId, int maxTracks=-1) const;
+    QList<Song> getAlbumTracks(const Song &song, int maxTracks=-1) const { return getAlbumTracks(song.albumArtistOrComposer(), song.albumId(), maxTracks); }
     QList<Song> songs(const QStringList &files, bool allowPlaylists=false) const;
     QList<LibraryDb::Album> getArtistOrComposerAlbums(const QString &artist) const;
     void getDetails(QSet<QString> &artists, QSet<QString> &albumArtists, QSet<QString> &composers, QSet<QString> &albums, QSet<QString> &genres);

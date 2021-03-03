@@ -1,7 +1,7 @@
 /*
  * Cantata
  *
- * Copyright (c) 2011-2020 Craig Drummond <craig.p.drummond@gmail.com>
+ * Copyright (c) 2011-2021 Craig Drummond <craig.p.drummond@gmail.com>
  *
  * ----
  *
@@ -54,6 +54,7 @@ public:
     bool splitterAutoHide();
     QSize mainWindowSize();
     QSize mainWindowCollapsedSize();
+    QPoint mainWindowPos();
     bool maximized();
     bool useSystemTray();
     bool minimiseOnClose();
@@ -161,6 +162,7 @@ public:
     void saveMainWindowSize(const QSize &v);
     void saveMainWindowCollapsedSize(const QSize &v);
     void saveMaximized(bool v);
+    void saveMainWindowPos(const QPoint &pos);
     void saveUseSystemTray(bool v);
     void saveMinimiseOnClose(bool v);
     void saveShowPopups(bool v);

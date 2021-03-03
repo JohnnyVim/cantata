@@ -1,7 +1,7 @@
 /*
  * Cantata
  *
- * Copyright (c) 2011-2020 Craig Drummond <craig.p.drummond@gmail.com>
+ * Copyright (c) 2011-2021 Craig Drummond <craig.p.drummond@gmail.com>
  *
  * ----
  *
@@ -43,7 +43,6 @@ public:
         // DO NOT CHANGE ORDER!
         TuneIn,
         ShoutCast,
-        Dirble,
         CommunityRadio,
         NumCategories
     };

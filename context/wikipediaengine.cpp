@@ -1,7 +1,7 @@
 /*
  * Cantata
  *
- * Copyright (c) 2011-2020 Craig Drummond <craig.p.drummond@gmail.com>
+ * Copyright (c) 2011-2021 Craig Drummond <craig.p.drummond@gmail.com>
  *
  * ----
  *
@@ -249,6 +249,7 @@ static QString wikiToHtml(QString answer, bool introOnly, const QUrl &url)
     }
     answer.replace("&amp;nbsp;", " ");
     answer.replace("&ndash;", "-");
+    answer.replace("&amp;mdash;", "—");
     answer.replace("<br><h", "<h");
     if (introOnly) {
         end=answer.indexOf("==", 3);

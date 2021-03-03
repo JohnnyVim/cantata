@@ -1,7 +1,7 @@
 /*
  * Cantata
  *
- * Copyright (c) 2011-2020 Craig Drummond <craig.p.drummond@gmail.com>
+ * Copyright (c) 2011-2021 Craig Drummond <craig.p.drummond@gmail.com>
  *
  * ----
  *
@@ -246,6 +246,11 @@ QSize Settings::mainWindowCollapsedSize()
     return cfg.get("mainWindowCollapsedSize", QSize());
 }
 
+QPoint Settings::mainWindowPos()
+{
+    return cfg.get("mainWindowPos", QPoint());
+}
+
 bool Settings::maximized()
 {
     return cfg.get("maximized", false);
@@ -324,7 +329,7 @@ QSet<QString> Settings::singleTracksFolders()
 
 MPDParseUtils::CueSupport Settings::cueSupport()
 {
-    return MPDParseUtils::toCueSupport(cfg.get("cueSupport", MPDParseUtils::toStr(MPDParseUtils::Cue_Parse)));
+    return MPDParseUtils::toCueSupport(cfg.get("cueSupport", MPDParseUtils::toStr(MPDParseUtils::Cue_Ignore)));
 }
 
 QStringList Settings::lyricProviders()
@@ -782,6 +787,11 @@ void Settings::saveMainWindowCollapsedSize(const QSize &v)
     if (v.width()>16 && v.height()>16) {
         cfg.set("mainWindowCollapsedSize", v);
     }
+}
+
+void Settings::saveMainWindowPos(const QPoint &pos)
+{
+    return cfg.set("mainWindowPos", pos);
 }
 
 void Settings::saveUseSystemTray(bool v)

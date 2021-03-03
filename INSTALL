@@ -25,9 +25,9 @@ The following options may be passed to CMake:
         Specify which type of build. Debug builds will be *much* larger, as
         they will contain extra debugging information.
 
-    -ENABLE_CATEGORIZED_VIEW=OFF
-        Enable categorized view. Can be disabled due to reported crash - #1530
-        Default: ON
+    -ENABLE_CATEGORIZED_VIEW=ON
+        Enable categorized view. Disabled due to reported crash - #1530
+        Default: OFF
 
     -DENABLE_HTTP_STREAM_PLAYBACK=ON
         Enable support for playing back MPD HTTP streams via QtMultiMedia or
@@ -49,6 +49,9 @@ The following options may be passed to CMake:
         system proxy settings are used.
         Default: ON
 
+    -DENABLE_SCROBBLING=OFF
+        Enable scrobbling.
+        Default: ON
 
     Linux specific:
 

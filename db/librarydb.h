@@ -1,7 +1,7 @@
 /*
  * Cantata
  *
- * Copyright (c) 2017-2020 Craig Drummond <craig.p.drummond@gmail.com>
+ * Copyright (c) 2017-2021 Craig Drummond <craig.p.drummond@gmail.com>
  *
  * ----
  *
@@ -121,7 +121,7 @@ public:
     QList<Genre> getGenres();
     QList<Artist> getArtists(const QString &genre=QString());
     QList<Album> getAlbums(const QString &artistId=QString(), const QString &genre=QString(), AlbumSort sort=AS_YrAlAr);
-    QList<Song> getTracks(const QString &artistId, const QString &albumId, const QString &genre=QString(), AlbumSort sort=AS_YrAlAr, bool useFilter=true);
+    QList<Song> getTracks(const QString &artistId, const QString &albumId, const QString &genre=QString(), AlbumSort sort=AS_YrAlAr, bool useFilter=true, int maxTracks=-1);
     QList<Song> getTracks(int rowFrom, int count);
     int trackCount();
     QList<Song> songs(const QStringList &files, bool allowPlaylists=false) const;

@@ -1,7 +1,7 @@
 /*
  * Cantata
  *
- * Copyright (c) 2011-2020 Craig Drummond <craig.p.drummond@gmail.com>
+ * Copyright (c) 2011-2021 Craig Drummond <craig.p.drummond@gmail.com>
  *
  * ----
  *
@@ -269,7 +269,7 @@ ContextWidget::ContextWidget(QWidget *parent)
     artist = new ArtistView(standardContext);
     album = new AlbumView(standardContext);
     song = new SongView(standardContext);
-    minWidth=album->picSize().width()*2.5;
+    minWidth=album->width()+artist->width()+song->width();
 
     artist->addEventFilter(this);
     album->addEventFilter(this);

@@ -1,7 +1,7 @@
 /*
  * Cantata
  *
- * Copyright (c) 2011-2020 Craig Drummond <craig.p.drummond@gmail.com>
+ * Copyright (c) 2011-2021 Craig Drummond <craig.p.drummond@gmail.com>
  *
  * ----
  *
@@ -33,7 +33,9 @@
 #include "mpd-interface/mpdstatus.h"
 #include "support/thread.h"
 #include "tags/taghelperiface.h"
+#ifdef ENABLE_SCROBBLING
 #include "scrobbling/scrobbler.h"
+#endif
 #include "support/fancytabwidget.h"
 #include "support/combobox.h"
 #include "widgets/itemview.h"
@@ -80,7 +82,9 @@ void Application::init()
     TagHelperIface::self();
     #endif
     NetworkProxyFactory::self();
+    #ifdef ENABLE_SCROBBLING
     Scrobbler::self();
+    #endif
     MpdLibraryModel::self();
     PlaylistsModel::self();
     StreamsModel::self();

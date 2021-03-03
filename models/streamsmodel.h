@@ -1,7 +1,7 @@
 /*
  * Cantata
  *
- * Copyright (c) 2011-2020 Craig Drummond <craig.p.drummond@gmail.com>
+ * Copyright (c) 2011-2021 Craig Drummond <craig.p.drummond@gmail.com>
  *
  * ----
  *
@@ -80,9 +80,6 @@ public:
         bool isCategory() const override { return true; }
         virtual bool isFavourites() const { return false; }
         virtual bool isBuiltIn() const { return true; }
-        virtual bool isDi() const { return false; }
-        virtual bool isSoma() const { return false; }
-        virtual bool isListenLive() const { return false; }
         virtual void removeCache();
         bool isTopLevel() const { return parent && nullptr==parent->parent; }
         virtual bool canReload() const { return !cacheName.isEmpty() || isTopLevel() || !url.isEmpty(); }
@@ -141,39 +138,6 @@ public:
         QString fullUrl() const override { return ApiKeys::self()->addKey(url, ApiKeys::ShoutCast); }
     };
 
-    struct DirbleCategoryItem : public CategoryItem
-    {
-        DirbleCategoryItem(const QString &u, const QString &n=QString(), CategoryItem *p=nullptr, const QIcon &i=QIcon(),
-                              const QString &cn=QString(), const QString &bn=QString())
-            : CategoryItem(u, n, p, i, cn, bn) { }
-        QString fullUrl() const override { return ApiKeys::self()->addKey(url, ApiKeys::Dirble); }
-    };
-
-    struct ListenLiveCategoryItem : public CategoryItem
-    {
-        ListenLiveCategoryItem(const QString &u, const QString &n, CategoryItem *p, const QIcon &i, const QString &cn)
-            : CategoryItem(u, n, p, i, cn) { }
-        bool isListenLive() const override { return true; }
-        bool isBuiltIn() const override { return false; }
-    };
-
-    struct DiCategoryItem : public CategoryItem
-    {
-        DiCategoryItem(const QString &u, const QString &n, CategoryItem *p, const QIcon &i, const QString &cn)
-            : CategoryItem(u, n, p, i, cn, QString(), true) { }
-        void addHeaders(QNetworkRequest &req) override;
-        bool isDi() const override { return true; }
-        bool isBuiltIn() const override { return false; }
-    };
-
-    struct SomaCategoryItem : public CategoryItem
-    {
-        SomaCategoryItem(const QString &u, const QString &n, CategoryItem *p, const QIcon &i, const QString &cn, bool mod)
-            : CategoryItem(u, n, p, i, cn, QString(), mod) { }
-        bool isSoma() const override { return true; }
-        bool isBuiltIn() const override { return false; }
-    };
-
     struct XmlCategoryItem : public CategoryItem
     {
         XmlCategoryItem(const QString &n, CategoryItem *p, const QIcon &i, const QString &cn)
@@ -186,21 +150,19 @@ public:
 
     struct Category
     {
-        Category(const QString &n, const QIcon &i, const QString &k, bool b, bool h, bool c)
-            : name(n), icon(i), key(k), builtin(b), hidden(h), configurable(c) { }
+        Category(const QString &n, const QIcon &i, const QString &k, bool b, bool h)
+            : name(n), icon(i), key(k), builtin(b), hidden(h) { }
         QString name;
         QIcon icon;
         QString key;
         bool builtin;
         bool hidden;
-        bool configurable;
     };
 
     static const QString constPrefix;
     static const QString constSubDir;
     static const QString constCacheExt;
     static const QString constShoutCastHost;
-    static const QString constDirbleHost;
     static const QString constCommunityHost;
     static const QString constCompressedXmlFile;
     static const QString constXmlFile;
@@ -249,7 +211,6 @@ public:
     const QIcon & favouritesIcon() const { return favourites->icon; }
     bool isTuneIn(const CategoryItem *cat) const { return tuneIn==cat; }
     bool isShoutCast(const CategoryItem *cat) const { return shoutCast==cat; }
-    bool isDirble(const CategoryItem *cat) const { return dirble==cat; }
     CategoryItem * tuneInCat() const { return tuneIn; }
 
     QStringList filenames(const QModelIndexList &indexes, bool addPrefix) const;
@@ -286,18 +247,12 @@ Q_SIGNALS:
 public:
     static QList<Item *> parseRadioTimeResponse(QIODevice *dev, CategoryItem *cat, bool parseSubText=false);
     static QList<Item *> parseIceCastResponse(QIODevice *dev, CategoryItem *cat);
-    static QList<Item *> parseSomaFmResponse(QIODevice *dev, CategoryItem *cat);
-    static QList<Item *> parseDigitallyImportedResponse(QIODevice *dev, CategoryItem *cat);
-    static QList<Item *> parseListenLiveResponse(QIODevice *dev, CategoryItem *cat);
     static QList<Item *> parseShoutCastSearchResponse(QIODevice *dev, CategoryItem *cat);
     QList<Item *> parseShoutCastResponse(QIODevice *dev, CategoryItem *cat);
     static QList<Item *> parseShoutCastLinks(QXmlStreamReader &doc, CategoryItem *cat);
     static QList<Item *> parseShoutCastStations(QXmlStreamReader &doc, CategoryItem *cat);
-    QList<Item *> parseDirbleResponse(QIODevice *dev, CategoryItem *cat, const QString &origUrl);
-    static QList<Item *> parseDirbleStations(QIODevice *dev, CategoryItem *cat);
     static QList<Item *> parseCommunityStations(QIODevice *dev, CategoryItem *cat);
     static Item * parseRadioTimeEntry(QXmlStreamReader &doc, CategoryItem *parent, bool parseSubText=false);
-    static Item * parseSomaFmEntry(QXmlStreamReader &doc, CategoryItem *parent);
 
 private Q_SLOTS:
     void jobFinished();
@@ -320,7 +275,6 @@ private:
     FavouritesCategoryItem *favourites;
     CategoryItem *tuneIn;
     CategoryItem *shoutCast;
-    CategoryItem *dirble;
     Action *addBookmarkAction;
     Action *addToFavouritesAction;
     Action *configureDiAction;

@@ -1,7 +1,7 @@
 /*
  * Cantata
  *
- * Copyright (c) 2011-2020 Craig Drummond <craig.p.drummond@gmail.com>
+ * Copyright (c) 2011-2021 Craig Drummond <craig.p.drummond@gmail.com>
  *
  * ----
  *
@@ -200,7 +200,7 @@ void AlbumView::getTrackListing()
     }
 
     if (songs.isEmpty()) {
-        songs=MpdLibraryModel::self()->getAlbumTracks(currentSong);
+        songs=MpdLibraryModel::self()->getAlbumTracks(currentSong, 500);
     }
 
     if (!songs.isEmpty()) {

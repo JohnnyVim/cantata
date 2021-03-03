@@ -1,7 +1,7 @@
 /*
  * Cantata
  *
- * Copyright (c) 2011-2020 Craig Drummond <craig.p.drummond@gmail.com>
+ * Copyright (c) 2011-2021 Craig Drummond <craig.p.drummond@gmail.com>
  *
  * ----
  *
@@ -1058,3 +1058,6 @@ void Utils::raiseWindow(QWidget *w)
     #endif
 }
 
+QSize Utils::minSize(const QSize &fst, const QSize &snd) {
+    return QSize(std::min(fst.width(), snd.width()), std::min(fst.height(), snd.height()));
+}
